@@ -27,7 +27,7 @@ class Behavior extends base\Behavior
         ];
     }
 
-    public function process(queue\JobEvent $event)
+    public function process(base\Event $event)
     {
         try {
             $message = $this->createMessage($event);
