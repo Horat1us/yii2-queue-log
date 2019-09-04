@@ -19,17 +19,16 @@ trait ProfileTrait
         return $this->type;
     }
 
-    abstract public function getToken(): string;
-
-    public function __toString(): string
+    public function jsonSerialize(): array
     {
-        $action = $this->type === ProfileInterface::TYPE_START ? "started" : "stopped";
-        return "{$this->getToken()} is {$action}.";
+        return [
+            'type' => $this->type,
+        ];
     }
 
     protected function setType(string $type): void
     {
-        if ($type !== ProfileInterface::TYPE_START && $type !== ProfileInterface::TYPE_END) {
+        if ($type !== ProfileInterface::TYPE_BEGIN && $type !== ProfileInterface::TYPE_DONE) {
             throw new \InvalidArgumentException(
                 "Invalid type given: " . print_r($type)
             );

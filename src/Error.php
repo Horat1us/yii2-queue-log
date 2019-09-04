@@ -10,12 +10,13 @@ use yii\queue;
  * Class Error
  * @package Horat1us\Yii\Queue\Log
  */
-class Error extends \Exception
+class Error extends \Exception implements ProfileInterface
 {
     use ProfileTrait {
-        __toString as private unused__toString;
+        jsonSerialize as private jsonSerializeProfile;
     }
     use ExecTrait {
+        jsonSerialize as private jsonSerializeExec;
         __construct as private constructExec;
     }
 
@@ -31,7 +32,7 @@ class Error extends \Exception
             $previous = $event->error;
         }
 
-        $message = "{$this->getToken()} is finished with error " . get_class($previous);
+        $message = "{$this->name} job is finished with error " . get_class($previous);
         parent::__construct($message, $previous->getCode(), $previous);
     }
 
@@ -39,6 +40,11 @@ class Error extends \Exception
     {
         return parent::__toString() . PHP_EOL
             . 'Additional Information:' . PHP_EOL . print_r($this->jsonSerialize(), true);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return array_merge($this->jsonSerializeProfile(), $this->jsonSerializeExec());
     }
 
     public static function createFromEvent(queue\ExecEvent $event): Error

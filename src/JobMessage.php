@@ -16,7 +16,7 @@ class JobMessage implements MessageInterface
 
     public function __toString(): string
     {
-        return "{$this->getToken()} is pushed.";
+        return ":name (ID :id) is pushed.";
     }
 
     public static function createFromEvent(queue\JobEvent $event)

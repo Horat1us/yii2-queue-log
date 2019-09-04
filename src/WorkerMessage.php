@@ -14,6 +14,9 @@ class WorkerMessage implements MessageInterface, ProfileInterface
 {
     use ProfileTrait;
 
+    public const STATUS_UP = 'up';
+    public const STATUS_DOWN = 'down';
+
     public const ERROR_INVALID_EVENT_NAME = 1;
     public const ERROR_MISSING_WORKER_PID = 2;
 
@@ -36,11 +39,20 @@ class WorkerMessage implements MessageInterface, ProfileInterface
         return "Worker {$this->pid}";
     }
 
+    public function getStatus(): string
+    {
+        static $statuses = [
+            ProfileInterface::TYPE_BEGIN => static::STATUS_UP,
+            ProfileInterface::TYPE_DONE => static::STATUS_DOWN,
+        ];
+        return $statuses[$this->type];
+    }
+
     public function jsonSerialize(): array
     {
         return [
             'pid' => $this->pid,
-            'type' => $this->type,
+            'status' => $this->getStatus(),
         ];
     }
 
@@ -48,10 +60,10 @@ class WorkerMessage implements MessageInterface, ProfileInterface
     {
         switch ($event->name) {
             case cli\Queue::EVENT_WORKER_START:
-                $type = static::TYPE_START;
+                $type = static::TYPE_BEGIN;
                 break;
             case cli\Queue::EVENT_WORKER_STOP:
-                $type = static::TYPE_END;
+                $type = static::TYPE_DONE;
                 break;
             default:
                 throw new \DomainException(
@@ -68,5 +80,10 @@ class WorkerMessage implements MessageInterface, ProfileInterface
         }
 
         return new static($pid, $type);
+    }
+
+    public function __toString(): string
+    {
+        return "Worker :pid :down";
     }
 }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Horat1us\Yii\Queue\Log;
 
-use yii\log;
-
 /**
  * Interface ProfileInterface
  * @package Horat1us\Yii\Queue\Log
@@ -15,8 +13,8 @@ use yii\log;
  */
 interface ProfileInterface
 {
-    public const TYPE_START = 'start';
-    public const TYPE_END = 'end';
+    public const TYPE_BEGIN = 'begin';
+    public const TYPE_DONE = 'done';
 
     public function getToken(): string;
 

@@ -15,9 +15,12 @@ class ExecMessage implements MessageInterface, ProfileInterface
 {
     public const ERROR_INVALID_EVENT_NAME = 11;
 
-    use ProfileTrait;
+    use ProfileTrait {
+        jsonSerialize as private jsonSerializeProfile;
+    }
     use ExecTrait {
         setExecEvent as private baseSetExecEvent;
+        jsonSerialize as private jsonSerializeExec;
     }
 
     /**
@@ -29,10 +32,10 @@ class ExecMessage implements MessageInterface, ProfileInterface
         $this->baseSetExecEvent($event);
         switch ($event->name) {
             case queue\Queue::EVENT_BEFORE_EXEC:
-                $this->setType(static::TYPE_END);
+                $this->setType(static::TYPE_DONE);
                 break;
             case queue\Queue::EVENT_AFTER_EXEC:
-                $this->setType(static::TYPE_START);
+                $this->setType(static::TYPE_BEGIN);
                 break;
             case queue\Queue::EVENT_AFTER_ERROR:
                 throw Error::createFromEvent($event);
@@ -42,6 +45,16 @@ class ExecMessage implements MessageInterface, ProfileInterface
                     static::ERROR_INVALID_EVENT_NAME
                 );
         }
+    }
+
+    public function __toString(): string
+    {
+        return ":type job :name (ID :id)";
+    }
+
+    public function jsonSerialize(): array
+    {
+        return array_merge($this->jsonSerializeProfile(), $this->jsonSerializeExec());
     }
 
     /**

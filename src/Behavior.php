@@ -39,10 +39,10 @@ class Behavior extends base\Behavior
 
         if ($message instanceof ProfileInterface) {
             switch ($message->getType()) {
-                case ProfileInterface::TYPE_START:
+                case ProfileInterface::TYPE_BEGIN:
                     \Yii::beginProfile($message->getToken(), get_class($message));
                     break;
-                case ProfileInterface::TYPE_END:
+                case ProfileInterface::TYPE_DONE:
                     \Yii::endProfile($message->getToken(), get_class($message));
                     if ($this->autoFlush) {
                         \Yii::getLogger()->flush(true);
