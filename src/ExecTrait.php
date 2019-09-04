@@ -14,9 +14,9 @@ trait ExecTrait
 {
     use JobTrait {
         getToken as private getJobToken;
-        setJobEvent as private setJobEvent;
         jsonSerialize as private jsonSerializeToken;
         __construct as private constructToken;
+        setJobEvent as private;
     }
 
     /** @var int */
