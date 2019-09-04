@@ -14,6 +14,7 @@ trait ExecTrait
 {
     use JobTrait {
         getToken as private getJobToken;
+        setJobEvent as private setJobEvent;
         jsonSerialize as private jsonSerializeToken;
         __construct as private constructToken;
     }
@@ -28,14 +29,18 @@ trait ExecTrait
     {
         $this->constructToken($config);
         if (array_key_exists('event', $config)) {
-            $event = $config['event'];
-            /** @var ExecEvent $event */
-            $this->attempt = $event->attempt;
-            $this->pid = $event->sender->workerPid;
+            $this->setExecEvent($config['event']);
         } else {
             $this->attempt = $config['attempt'];
             $this->pid = $config['pid'] ?? null;
         }
+    }
+
+    protected function setExecEvent(ExecEvent $event): void
+    {
+        $this->setJobEvent($event);
+        $this->attempt = $event->attempt;
+        $this->pid = $event->sender->workerPid;
     }
 
     public function jsonSerialize(): array

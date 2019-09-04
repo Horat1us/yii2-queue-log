@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Horat1us\Yii\Queue\Log;
 
 use yii\queue;
+use yii\queue\ExecEvent;
 
 /**
  * Class ExecMessage
@@ -12,33 +13,34 @@ use yii\queue;
  */
 class ExecMessage implements MessageInterface, ProfileInterface
 {
+    public const ERROR_INVALID_EVENT_NAME = 11;
+
     use ProfileTrait;
     use ExecTrait {
-        __construct as private constructExec;
+        setExecEvent as private baseSetExecEvent;
     }
 
     /**
+     * @param ExecEvent $event
      * @throws Error
      */
-    protected function __construct(array $config)
+    protected function setExecEvent(ExecEvent $event): void
     {
-        $this->constructExec($config);
-
-        if (array_key_exists('event', $config)) {
-            /** @var queue\ExecEvent $event */
-            $event = $config['event'];
-            switch ($event->name) {
-                case queue\Queue::EVENT_AFTER_EXEC:
-                    $this->setType(static::TYPE_END);
-                    break;
-                case queue\Queue::EVENT_AFTER_PUSH:
-                    $this->setType(static::TYPE_START);
-                    break;
-                case queue\Queue::EVENT_AFTER_ERROR:
-                    throw Error::createFromEvent($event);
-            }
-        } else {
-            $this->setType($config['type']);
+        $this->baseSetExecEvent($event);
+        switch ($event->name) {
+            case queue\Queue::EVENT_BEFORE_EXEC:
+                $this->setType(static::TYPE_END);
+                break;
+            case queue\Queue::EVENT_AFTER_EXEC:
+                $this->setType(static::TYPE_START);
+                break;
+            case queue\Queue::EVENT_AFTER_ERROR:
+                throw Error::createFromEvent($event);
+            default:
+                throw new \DomainException(
+                    "Unsupported event name {$event->name}.",
+                    static::ERROR_INVALID_EVENT_NAME
+                );
         }
     }
 
