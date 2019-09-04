@@ -15,12 +15,12 @@ class ExecMessage implements MessageInterface, ProfileInterface
 {
     public const ERROR_INVALID_EVENT_NAME = 11;
 
-    use ProfileTrait {
-        jsonSerialize as private jsonSerializeProfile;
-    }
-    use ExecTrait {
-        setExecEvent as private baseSetExecEvent;
-        jsonSerialize as private jsonSerializeExec;
+    use ProfileTrait, ExecTrait {
+        ProfileTrait::jsonSerialize insteadof ExecTrait;
+
+        ProfileTrait::jsonSerialize as private jsonSerializeProfile;
+        ExecTrait::jsonSerialize as private jsonSerializeExec;
+        ExecTrait::setExecEvent as private baseSetExecEvent;
     }
 
     /**

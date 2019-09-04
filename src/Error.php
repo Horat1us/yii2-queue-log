@@ -12,12 +12,13 @@ use yii\queue;
  */
 class Error extends \Exception implements ProfileInterface
 {
-    use ProfileTrait {
-        jsonSerialize as private jsonSerializeProfile;
-    }
-    use ExecTrait {
-        jsonSerialize as private jsonSerializeExec;
-        __construct as private constructExec;
+    use ProfileTrait, ExecTrait {
+        ProfileTrait::jsonSerialize insteadof ExecTrait;
+
+        ProfileTrait::jsonSerialize as private jsonSerializeProfile;
+        ExecTrait::jsonSerialize as private jsonSerializeExec;
+        ExecTrait::__construct as private constructExec;
+
     }
 
     protected function __construct(array $config)
