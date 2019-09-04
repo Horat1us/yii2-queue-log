@@ -42,8 +42,8 @@ class WorkerMessage implements MessageInterface, ProfileInterface
     public function getStatus(): string
     {
         static $statuses = [
-            ProfileInterface::TYPE_BEGIN => static::STATUS_UP,
-            ProfileInterface::TYPE_DONE => static::STATUS_DOWN,
+            ProfileInterface::TYPE_BEGIN => WorkerMessage::STATUS_UP,
+            ProfileInterface::TYPE_DONE => WorkerMessage::STATUS_DOWN,
         ];
         return $statuses[$this->type];
     }
