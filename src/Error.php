@@ -18,11 +18,11 @@ class Error extends \Exception implements ProfileInterface
         ProfileTrait::jsonSerialize as private jsonSerializeProfile;
         ExecTrait::jsonSerialize as private jsonSerializeExec;
         ExecTrait::__construct as private constructExec;
-
     }
 
     protected function __construct(array $config)
     {
+        $this->type = ProfileInterface::TYPE_DONE;
         $this->constructExec($config);
 
         if (array_key_exists('previous', $config)) {
