@@ -1,7 +1,7 @@
 # Yii2 Queue Log Behavior (Advanced)
 
 Purpose of this package to create replacement for Yii2 built-in
-[LogBehavior](https://github.com/VEKsoftware/yii2-log-behavior/blob/master/behaviors/Log.php).
+[LogBehavior](https://github.com/yiisoft/yii2-queue/blob/2.3.0/src/LogBehavior.php).
 
 Why replacement? Because built-in LogBehavior write logs in string format:
 it cannot be easy parsed and processed.

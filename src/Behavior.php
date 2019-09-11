@@ -6,6 +6,7 @@ namespace Horat1us\Yii\Queue\Log;
 
 use yii\queue;
 use yii\base;
+use yii\log;
 
 /**
  * Class Behavior
@@ -29,23 +30,41 @@ class Behavior extends base\Behavior
 
     public function process(base\Event $event)
     {
+        $logger = \Yii::getLogger();
+
         try {
             $message = $this->createMessage($event);
-            \Yii::info($message, get_class($message));
+            $logger->log(
+                $message,
+                log\Logger::LEVEL_INFO,
+                get_class($message)
+            );
         } catch (Error $error) {
-            \Yii::error($error, get_class($error));
+            $logger->log(
+                $error,
+                log\Logger::LEVEL_ERROR,
+                get_class($error)
+            );
             $message = $error;
         }
 
         if ($message instanceof ProfileInterface) {
             switch ($message->getType()) {
                 case ProfileInterface::TYPE_BEGIN:
-                    \Yii::beginProfile($message->getToken(), get_class($message));
+                    $logger->log(
+                        $message->getToken(),
+                        log\Logger::LEVEL_PROFILE_BEGIN,
+                        get_class($message)
+                    );
                     break;
                 case ProfileInterface::TYPE_DONE:
-                    \Yii::endProfile($message->getToken(), get_class($message));
+                    $logger->log(
+                        $message->getToken(),
+                        log\Logger::LEVEL_PROFILE_END,
+                        get_class($message)
+                    );
                     if ($this->autoFlush) {
-                        \Yii::getLogger()->flush(true);
+                        $logger->flush(true);
                     }
                     break;
             }
