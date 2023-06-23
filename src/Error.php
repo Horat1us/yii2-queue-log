@@ -34,7 +34,7 @@ class Error extends \Exception implements ProfileInterface
         }
 
         $message = "{$this->name} job is finished with error " . get_class($previous);
-        parent::__construct($message, $previous->getCode(), $previous);
+        parent::__construct($message, (int)$previous->getCode(), $previous);
     }
 
     public function __toString(): string
