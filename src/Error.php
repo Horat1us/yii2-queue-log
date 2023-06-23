@@ -33,7 +33,7 @@ class Error extends \Exception implements ProfileInterface
             $previous = $event->error;
         }
 
-        $message = "{$this->name} job is finished with error " . get_class($previous);
+        $message = "{$this->name} Error " . get_class($previous) . ": " . $previous->getMessage();
         parent::__construct($message, (int)$previous->getCode(), $previous);
     }
 
